@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1118"><title>SLC OPS</title>
+  <link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar"><div><b>SLC OPS</b><span id="moduleTitle">Operations Control</span></div><button id="settingsBtn" class="ghost">⚙</button></header>
+<main id="app"></main>
+<nav class="bottom">
+  <button data-nav="home">⌂<small>Inicio</small></button>
+  <button data-nav="hourly">▦<small>Hourly Reports</small></button>
+  <button data-nav="employees">♙<small>Employees</small></button>
+  <button data-nav="estimate">≋<small>Estimado</small></button>
+</nav>
+<input id="excelInput" type="file" accept=".xlsx,.xls" hidden>
+<input id="jsonInput" type="file" accept=".json" hidden>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="app.js"></script>
+</body></html>

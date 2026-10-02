@@ -1,0 +1,3 @@
+const C="slc-ops-v1";const A=["./","./index.html","./styles.css","./app.js","./manifest.webmanifest"];
+self.addEventListener("install",e=>e.waitUntil(caches.open(C).then(c=>c.addAll(A))));
+self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(x=>{let y=x.clone();caches.open(C).then(c=>c.put(e.request,y));return x}).catch(()=>caches.match("./index.html")))));
