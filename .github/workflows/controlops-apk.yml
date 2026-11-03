@@ -40,7 +40,9 @@ jobs:
         run: flutter test
       - name: Build APK
         working-directory: ControlOPS_Flutter_Android
-        run: flutter build apk --debug
+        run: |
+          sed -i 's/gradle-8\.10\.2-all\.zip/gradle-8.14-all.zip/' android/gradle/wrapper/gradle-wrapper.properties
+          flutter build apk --debug
       - name: Publish APK
         uses: actions/upload-artifact@v4
         with:
