@@ -1,4 +1,4 @@
-name: ControlOPS Android APK
+name: WorkFlow Android APK
 on:
   push:
     branches:
@@ -22,33 +22,34 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Unpack ControlOPS source
+      - name: Unpack WorkFlow source
         run: unzip -q controlops-src.zip
-      - name: Prepare Android platform
-        working-directory: ControlOPS_Flutter_Android
+      - name: Prepare native Android and launcher
+        working-directory: WorkFlow_Android
         run: |
-          cp android/app/src/main/AndroidManifest.xml /tmp/controlops-manifest.xml
+          cp android/app/src/main/AndroidManifest.xml /tmp/workflow-manifest.xml
           rm -rf android
-          flutter create --platforms=android --project-name controlops_android --org com.controlops .
-          cp /tmp/controlops-manifest.xml android/app/src/main/AndroidManifest.xml
-      - name: Remove default Flutter demo test
-        run: rm -f ControlOPS_Flutter_Android/test/widget_test.dart
+          flutter create --platforms=android --project-name controlops_android --org com.workflow .
+          cp /tmp/workflow-manifest.xml android/app/src/main/AndroidManifest.xml
+          cp -R android_launcher/. android/app/src/main/res/
+      - name: Remove Flutter demo test
+        run: rm -f WorkFlow_Android/test/widget_test.dart
       - name: Install dependencies
-        working-directory: ControlOPS_Flutter_Android
+        working-directory: WorkFlow_Android
         run: flutter pub get
       - name: Analyze
-        working-directory: ControlOPS_Flutter_Android
+        working-directory: WorkFlow_Android
         run: flutter analyze --no-fatal-warnings --no-fatal-infos
       - name: Test
-        working-directory: ControlOPS_Flutter_Android
+        working-directory: WorkFlow_Android
         run: flutter test
       - name: Build APK
-        working-directory: ControlOPS_Flutter_Android
+        working-directory: WorkFlow_Android
         run: flutter build apk --debug
       - name: Publish APK
         uses: actions/upload-artifact@v4
         with:
-          name: ControlOPS-Android-APK
-          path: ControlOPS_Flutter_Android/build/app/outputs/flutter-apk/app-debug.apk
+          name: WorkFlow-Android-APK
+          path: WorkFlow_Android/build/app/outputs/flutter-apk/app-debug.apk
           if-no-files-found: error
           retention-days: 30
