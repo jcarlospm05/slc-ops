@@ -1,0 +1,59 @@
+name: WorkFlow Android APK
+on:
+  push:
+    branches: [workflow-android]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Flutter stable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Unpack WorkFlow
+        run: unzip -q workflow-src.zip
+      - name: Create compatible Android project and launcher icons
+        working-directory: WorkFlow_Android
+        run: |
+          cp android/app/src/main/AndroidManifest.xml /tmp/workflow-manifest.xml
+          rm -rf android
+          flutter create --platforms=android --project-name controlops_android --org com.controlops .
+          cp /tmp/workflow-manifest.xml android/app/src/main/AndroidManifest.xml
+          cp -R branding/android_res/. android/app/src/main/res/
+          sed -i 's/applicationId = "com.controlops.controlops_android"/applicationId = "com.workflow.operaciones"/' android/app/build.gradle.kts
+          grep -q 'applicationId = "com.workflow.operaciones"' android/app/build.gradle.kts
+          grep -q 'android:label="WorkFlow"' android/app/src/main/AndroidManifest.xml
+          test -f android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          test -f android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+      - name: Remove generated demo widget test
+        run: rm -f WorkFlow_Android/test/widget_test.dart
+      - name: Dependencies
+        working-directory: WorkFlow_Android
+        run: flutter pub get
+      - name: Dart analysis
+        working-directory: WorkFlow_Android
+        run: flutter analyze --no-fatal-warnings --no-fatal-infos
+      - name: Unit tests
+        working-directory: WorkFlow_Android
+        run: flutter test
+      - name: APK debug
+        working-directory: WorkFlow_Android
+        run: flutter build apk --debug
+      - name: Upload WorkFlow Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: WorkFlow-Android-APK
+          path: WorkFlow_Android/build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
