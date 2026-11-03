@@ -27,6 +27,8 @@ jobs:
       - name: Prepare Android platform
         working-directory: ControlOPS_Flutter_Android
         run: flutter create --platforms=android --project-name controlops_android --org com.controlops .
+      - name: Remove default Flutter demo test
+        run: rm -f ControlOPS_Flutter_Android/test/widget_test.dart
       - name: Install dependencies
         working-directory: ControlOPS_Flutter_Android
         run: flutter pub get
