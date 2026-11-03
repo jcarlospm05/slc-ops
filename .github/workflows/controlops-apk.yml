@@ -26,7 +26,11 @@ jobs:
         run: unzip -q controlops-src.zip
       - name: Prepare Android platform
         working-directory: ControlOPS_Flutter_Android
-        run: flutter create --platforms=android --project-name controlops_android --org com.controlops .
+        run: |
+          cp android/app/src/main/AndroidManifest.xml /tmp/controlops-manifest.xml
+          rm -rf android
+          flutter create --platforms=android --project-name controlops_android --org com.controlops .
+          cp /tmp/controlops-manifest.xml android/app/src/main/AndroidManifest.xml
       - name: Remove default Flutter demo test
         run: rm -f ControlOPS_Flutter_Android/test/widget_test.dart
       - name: Install dependencies
@@ -40,9 +44,7 @@ jobs:
         run: flutter test
       - name: Build APK
         working-directory: ControlOPS_Flutter_Android
-        run: |
-          sed -i 's/gradle-8\.10\.2-all\.zip/gradle-8.14-all.zip/' android/gradle/wrapper/gradle-wrapper.properties
-          flutter build apk --debug
+        run: flutter build apk --debug
       - name: Publish APK
         uses: actions/upload-artifact@v4
         with:
