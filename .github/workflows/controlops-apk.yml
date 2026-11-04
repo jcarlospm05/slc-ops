@@ -45,11 +45,11 @@ jobs:
         run: flutter test
       - name: Build APK
         working-directory: WorkFlow_Android
-        run: flutter build apk --debug
+        run: flutter build apk --release
       - name: Publish APK
         uses: actions/upload-artifact@v4
         with:
-          name: WorkFlow-Android-APK
-          path: WorkFlow_Android/build/app/outputs/flutter-apk/app-debug.apk
+          name: WorkFlow-Android-Release-APK
+          path: WorkFlow_Android/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
           retention-days: 30
